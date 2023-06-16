@@ -1,0 +1,60 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Demo{{ endblock }}
+
+{{ block content }}
+
+<p>Get the sum of the following two questions</p>
+
+<table class="table">
+        <tr>
+            <th>
+                {{ formfield  'q1'}}
+                {{ formfield_errors 'q1' }}
+                {{ formfield  'q2'}}
+                {{ formfield_errors 'q2' }}
+            </th>
+        </tr>
+</table>
+
+
+<p>Your trustworthiness score: <span id="score"></span></p>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var varList = ["q1", "q2"]; // define the all vars for calculation
+    function calculateSum() {
+        var sum = 0;
+        var selectedCount = 0;
+
+        varList.forEach(function(varName) {
+        var elements = document.querySelectorAll('input[name="' + varName + '"]');
+        var selectedOption = Array.from(elements).find(function(element) {
+            return element.checked;
+        });
+
+        if (selectedOption) {
+            var value = parseFloat(selectedOption.value) || 0;
+            sum += value;
+            if (value > 0) {
+            selectedCount++;
+            }
+        }
+        });
+
+        var roundedSum = Math.round(sum * 100) / 100; // Round sum to 2 decimal places
+        document.getElementById('score').textContent = roundedSum.toFixed(2);
+    }
+
+    varList.forEach(function(varName) {
+        var elements = document.querySelectorAll('input[name="' + varName + '"]');
+        elements.forEach(function(element) {
+        element.addEventListener('change', calculateSum);
+        });
+    });
+
+    calculateSum(); // Calculate initial sum on page load
+    });
+</script>
+
+
+{{ endblock }}
